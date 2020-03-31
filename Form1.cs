@@ -17,9 +17,42 @@ namespace DienstToevoegen
         public DienstToevoegen()
         {
             ConOne = new Database();
-            EventSelectBox.DataSource = ConOne.GetEvents();
+            //EventSelectBox.DataSource = ConOne.GetEvents();
             InitializeComponent();
             CurrentShift = new Shift();
+
+            List<User> users = new List<User>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                users.Add(new User($"User{i + 1}"));
+            }
+            Schedule schedule = new Schedule();
+
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
+
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
+
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+
+            schedule.PlanShifts(users);
+
+            string sSchedule = "";
+            foreach (Shift shift in schedule.Shifts)
+            {
+                sSchedule += shift + "\n";
+            }
+
+            MessageBox.Show(sSchedule);
+
         }
         private void OnceCheckButton_CheckedChanged(object sender, EventArgs e)
         {
