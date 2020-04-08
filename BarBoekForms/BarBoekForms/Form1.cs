@@ -16,5 +16,12 @@ namespace BarBoekForms
         {
             InitializeComponent();
         }
+
+        private void butroostergenereer_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var roostergenereren = new RoosterGenereren();
+            roostergenereren.Show();
+        }
     }
 }

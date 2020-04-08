@@ -28,13 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.butroostergenereer = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // butroostergenereer
+            // 
+            this.butroostergenereer.Location = new System.Drawing.Point(13, 13);
+            this.butroostergenereer.Name = "butroostergenereer";
+            this.butroostergenereer.Size = new System.Drawing.Size(114, 23);
+            this.butroostergenereer.TabIndex = 0;
+            this.butroostergenereer.Text = "Rooster genereren";
+            this.butroostergenereer.UseVisualStyleBackColor = true;
+            this.butroostergenereer.Click += new System.EventHandler(this.butroostergenereer_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.butroostergenereer);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button butroostergenereer;
     }
 }
 
