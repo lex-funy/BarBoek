@@ -10,7 +10,7 @@ namespace DienstToevoegen
 {
     public class Database
     {
-        private MySqlConnection con = new MySqlConnection("server=84.31.134.4:3306;database=;username=newuser;password=test;");
+        private MySqlConnection con = new MySqlConnection("server=84.31.134.4;database=;username=newuser;password=test;");
         public List<string> GetEvents()
         {
             con.Open();
