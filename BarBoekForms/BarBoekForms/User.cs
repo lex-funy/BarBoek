@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
 
 namespace BarBoekForms
 {
@@ -54,6 +55,29 @@ namespace BarBoekForms
             if (this.Name == null || this.Name == "")
                 return "Unnamed user";
             return $"{this.Name}";
+        }
+
+        public List<User> ImportFromExcel(string fileLocation = @"C:\Users\Lex-Desktop\Documents\leden.xlsx")
+        {
+            Application excelApplication = new Application();
+
+            Workbook workbook = excelApplication.Workbooks.Open(fileLocation);
+            Worksheet worksheet = workbook.Sheets[1];
+
+            int rows = worksheet.UsedRange.Rows.Count;
+            int columns = worksheet.UsedRange.Columns.Count;
+
+            for (int i = 1; i < rows; i++)
+            {
+                for (int j = 1; j < columns; j++)
+                {
+                    Range range = worksheet.Cells[i, j];
+
+                    string temp = range.Text;
+                }
+            }
+
+            return null;
         }
     }
 }
