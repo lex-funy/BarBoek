@@ -31,7 +31,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ComboDate = new System.Windows.Forms.ComboBox();
             this.butgenereren = new System.Windows.Forms.Button();
-            this.Radioalvolwassen = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,6 +41,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(719, 292);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellClick);
             // 
             // ComboDate
             // 
@@ -61,23 +61,11 @@
             this.butgenereren.UseVisualStyleBackColor = true;
             this.butgenereren.Click += new System.EventHandler(this.butgenereren_Click);
             // 
-            // Radioalvolwassen
-            // 
-            this.Radioalvolwassen.AutoSize = true;
-            this.Radioalvolwassen.Location = new System.Drawing.Point(57, 106);
-            this.Radioalvolwassen.Name = "Radioalvolwassen";
-            this.Radioalvolwassen.Size = new System.Drawing.Size(119, 17);
-            this.Radioalvolwassen.TabIndex = 3;
-            this.Radioalvolwassen.TabStop = true;
-            this.Radioalvolwassen.Text = "Alleen volwassenen";
-            this.Radioalvolwassen.UseVisualStyleBackColor = true;
-            // 
             // RoosterGenereren
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.Radioalvolwassen);
             this.Controls.Add(this.butgenereren);
             this.Controls.Add(this.ComboDate);
             this.Controls.Add(this.dataGridView1);
@@ -85,7 +73,6 @@
             this.Text = "RoosterGenereren";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -94,6 +81,5 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ComboBox ComboDate;
         private System.Windows.Forms.Button butgenereren;
-        private System.Windows.Forms.RadioButton Radioalvolwassen;
     }
 }
