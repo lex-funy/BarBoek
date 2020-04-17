@@ -15,6 +15,7 @@ C:\xampp\htdocs\BarBoekTemp\BarBoekForms\BarBoekForms\bin\Debug\Renci.SshNet.xml
 C:\xampp\htdocs\BarBoekTemp\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.csproj.CopyComplete
 C:\xampp\htdocs\BarBoekTemp\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.exe
 C:\xampp\htdocs\BarBoekTemp\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.pdb
+<<<<<<< HEAD
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.exe.config
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.exe
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.pdb
@@ -35,3 +36,22 @@ C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForm
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.pdb
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.RoosterGenereren.resources
 C:\Users\chaim\Documents\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.Form1.resources
+=======
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.exe.config
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.exe
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BarBoekForms.pdb
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\BouncyCastle.Crypto.dll
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\Google.Protobuf.dll
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\MySql.Data.dll
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\Renci.SshNet.dll
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\Ubiety.Dns.Core.dll
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\Google.Protobuf.xml
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\MySql.Data.xml
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\bin\Debug\Renci.SshNet.xml
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.csprojAssemblyReference.cache
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.Properties.Resources.resources
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.csproj.GenerateResource.cache
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.csproj.CopyComplete
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.exe
+C:\xampp\htdocs\BarBoek\BarBoekForms\BarBoekForms\obj\Debug\BarBoekForms.pdb
+>>>>>>> 2191e3ce85ab76fd0e9d711e052e719e612d93fc
