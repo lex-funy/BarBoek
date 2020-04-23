@@ -18,7 +18,9 @@ namespace BarBoekForms
 
             User user = new User("test");
 
-            user.ImportFromExcel();
+            List<UserDTO> users = user.ImportFromExcel();
+
+
         }
     }
 }
