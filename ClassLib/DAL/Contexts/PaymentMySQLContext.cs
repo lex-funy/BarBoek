@@ -1,5 +1,4 @@
 ﻿using Barboek.ClassLib.DAL.Model;
-using ClassLibBarboek;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,50 +8,47 @@ using System.Threading.Tasks;
 
 namespace Barboek.ClassLib.DAL.Contexts
 {
-    public class ClubMySQLContext : BaseMySQLContext, iClubRetrieveContext
+    class PaymentMySQLContext : BaseMySQLContext, iPaymentRetrieveContext
     {
-        public ClubMySQLContext(string connString) : base(connString)
+        public PaymentMySQLContext(string connString) : base(connString)
         {
 
         }
 
-        public List<ClubDTO> GetAllClubs()
+        public List<PaymentDTO> GetAllPayments()
         {
-            string query = "Select * from club ";
+            string query = "Select * from payment";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             DataSet results = ExecuteQuery(query, parameters);
 
-            List<ClubDTO> clubs = new List<ClubDTO>();
+            List<PaymentDTO> payments = new List<PaymentDTO>();
 
             if (results != null)
             {
 
                 for (int x = 0; x < results.Tables[0].Rows.Count; x++)
                 {
-                    ClubDTO c = DataSetParser.DataSetToClub(results, x);
-                    clubs.Add(c);
-
-                    //clubs.Add(c);
+                    PaymentDTO p = DataSetParser.DataSetToPayment(results, x);
+                    payments.Add(p);
                 }
             }
-            return clubs;
+            return payments;
         }
 
-        public ClubDTO FindClubById(int id)
+        public PaymentDTO FindPaymentById(int id)
         {
-            string query = "Select * from clubs where id=@id";
+            string query = "Select * from payment where id=@id";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             parameters.Add(new KeyValuePair<string, string>("id", id.ToString()));
 
             DataSet results = ExecuteQuery(query, parameters);
-            ClubDTO c = new ClubDTO();
+            PaymentDTO p = new PaymentDTO();
 
             if (results != null && results.Tables[0].Rows.Count > 0)
             {
-                c = DataSetParser.DataSetToClub(results, 0);
+                p = DataSetParser.DataSetToPayment(results, 0);
             }
-            return c;        
+            return p;
         }
-
     }
 }

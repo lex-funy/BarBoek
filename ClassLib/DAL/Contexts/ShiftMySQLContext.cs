@@ -1,5 +1,4 @@
 ﻿using Barboek.ClassLib.DAL.Model;
-using ClassLibBarboek;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,50 +8,48 @@ using System.Threading.Tasks;
 
 namespace Barboek.ClassLib.DAL.Contexts
 {
-    public class ClubMySQLContext : BaseMySQLContext, iClubRetrieveContext
+    class ShiftMySQLContext : BaseMySQLContext, iShiftRetrieveContext
     {
-        public ClubMySQLContext(string connString) : base(connString)
+        public ShiftMySQLContext(string connString) : base(connString)
         {
 
         }
 
-        public List<ClubDTO> GetAllClubs()
+        public List<ShiftDTO> GetAllShift()
         {
-            string query = "Select * from club ";
+            string query = "Select * from shift";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             DataSet results = ExecuteQuery(query, parameters);
 
-            List<ClubDTO> clubs = new List<ClubDTO>();
+            List<ShiftDTO> shifts = new List<ShiftDTO>();
 
             if (results != null)
             {
 
                 for (int x = 0; x < results.Tables[0].Rows.Count; x++)
                 {
-                    ClubDTO c = DataSetParser.DataSetToClub(results, x);
-                    clubs.Add(c);
-
-                    //clubs.Add(c);
+                    ShiftDTO s = DataSetParser.DataSetToShift(results, x);
+                    shifts.Add(s);
                 }
             }
-            return clubs;
+            return shifts;
         }
 
-        public ClubDTO FindClubById(int id)
+        public ShiftDTO FindShiftById(int id)
         {
-            string query = "Select * from clubs where id=@id";
+            string query = "Select * from shift where id=@id";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             parameters.Add(new KeyValuePair<string, string>("id", id.ToString()));
 
             DataSet results = ExecuteQuery(query, parameters);
-            ClubDTO c = new ClubDTO();
+            ShiftDTO s = new ShiftDTO();
 
             if (results != null && results.Tables[0].Rows.Count > 0)
             {
-                c = DataSetParser.DataSetToClub(results, 0);
+                s = DataSetParser.DataSetToShift(results, 0);
             }
-            return c;        
+            return s;
         }
-
     }
 }
+
