@@ -8,15 +8,12 @@ namespace BarBoekForms
 {
     class Shift
     {
+        public int Id { get; set; }
         public string Event { get; set; }
-        
         public int UserAmount { get; set; }
-        
         public bool EventBool { get; set; }
-
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-
         public User User { get; set; }
 
         public Shift() { }

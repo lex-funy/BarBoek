@@ -16,9 +16,8 @@ namespace BarBoekForms
         {
             InitializeComponent();
 
-            User user = new User("test");
-
-            List<UserDTO> users = user.ImportFromExcel();
+            // TODO: add file path to function 
+            List<UserDTO> users = UserContainer.ImportFromExcel();
 
 
         }

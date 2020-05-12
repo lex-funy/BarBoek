@@ -3,18 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Office.Interop.Excel;
 
 namespace BarBoekForms
 {
     class User
     {
-        public string Name { get; set; }
-        public List<Shift> Shifts { get; }
+        public string Bondnumber;
+        public string Lastname;
+        public string Initials;
+        public string Insertion;
+        public string Name;
+        public int Permission;
+        public int AssociationNumber;
+        public DateTime Birthdate;
+        public string Email;
+        public string Password;
+        public string Gender;
+        public string Phone;
+        public string PhoneWork;
+        public string PhoneMobile;
 
-        public User(string name)
+        public Address Address;
+        public List<Shift> Shifts { get; set; }
+
+        public User(UserDTO userDto)
         {
-            this.Name = name;
+            this.Bondnumber = userDto.Bondnumber;
+            this.Lastname = userDto.Lastname;
+            this.Initials = userDto.Initials;
+            this.Insertion = userDto.Initials;
+            this.Name = userDto.Name;
+            this.Permission = userDto.Permission;
+            this.AssociationNumber = userDto.AssociationNumber;
+            this.Birthdate = userDto.Birthdate;
+            this.Email = userDto.Email;
+            this.Password = userDto.Password;
+            this.Gender = userDto.Gender;
+            this.Phone = userDto.Phone;
+            this.PhoneWork = userDto.PhoneWork;
+            this.PhoneMobile = userDto.PhoneMobile;
+
+            this.Address = new Address();
             this.Shifts = new List<Shift>();
         }
 
@@ -55,49 +84,6 @@ namespace BarBoekForms
             if (this.Name == null || this.Name == "")
                 return "Unnamed user";
             return $"{this.Name}";
-        }
-
-        public List<UserDTO> ImportFromExcel(string fileLocation = @"C:\Users\Lex-Desktop\Documents\leden.xlsx")
-        {
-            Application excelApplication = new Application();
-
-            Workbook workbook = excelApplication.Workbooks.Open(fileLocation);
-            Worksheet worksheet = workbook.Sheets[1];
-
-            int rows = worksheet.UsedRange.Rows.Count;
-            int columns = worksheet.UsedRange.Columns.Count;
-
-            List<UserDTO> users = new List<UserDTO>();
-            for (int i = 2; i < rows; i++)
-            {
-                UserDTO temp = new UserDTO();
-                temp.Address = new AddressDTO();
-
-                temp.Bondnumber          = worksheet.Cells[i, 1].Text;  // Bondsnummer
-                temp.Lastname            = worksheet.Cells[i, 2].Text;  // Achternaam
-                temp.Initials            = worksheet.Cells[i, 3].Text;  // Voorletters
-                temp.Insertion           = worksheet.Cells[i, 4].Text;  // Tussenvoegsel
-                temp.Name                = worksheet.Cells[i, 5].Text;  // Roepnaam
-
-                temp.Address.Street      = worksheet.Cells[i, 6].Text;  // Straat
-                temp.Address.HouseNumber = Int32.Parse(worksheet.Cells[i, 7].Text);  // Huis nummer
-                temp.Address.Addition    = worksheet.Cells[i, 8].Text;  // toevoeging
-                temp.Address.ZipCode     = worksheet.Cells[i, 9].Text;  // postcode
-                temp.Address.Residence   = worksheet.Cells[i, 10].Text; // woonplaats
-                temp.Address.Country     = worksheet.Cells[i, 11].Text; // land
-
-                temp.Phone               = worksheet.Cells[i, 12].Text; // telefoon
-                temp.Gender              = worksheet.Cells[i, 13].Text; // geslacht
-                temp.Birthdate           = DateTime.Parse(worksheet.Cells[i, 14].Text); // geboorte datum
-                temp.AssociationNumber   = Int32.Parse(worksheet.Cells[i, 15].Text); // verenigings lidnummer
-                temp.Email               = worksheet.Cells[i, 16].Text; // email
-                temp.PhoneWork           = worksheet.Cells[i, 17].Text; // telefoon werk
-                temp.PhoneMobile         = worksheet.Cells[i, 18].Text; // telefoon mobiel
-
-                users.Add(temp);
-            }
-
-            return users;
         }
     }
 }

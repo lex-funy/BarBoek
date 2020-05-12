@@ -72,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
     <Compile Include="AddressDAL.cs" />
     <Compile Include="AddressDTO.cs" />
     <Compile Include="Club.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Schedule.cs" />
     <Compile Include="Shift.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UserContainer.cs" />
     <Compile Include="UserDAL.cs" />
     <Compile Include="UserDTO.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

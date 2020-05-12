@@ -23,6 +23,33 @@ namespace BarBoekForms
         public string PhoneWork;
         public string PhoneMobile;
 
-        public AddressDTO Address;
+        public Address Address;
+        public List<Shift> Shifts { get; set; }
+
+        public UserDTO() 
+        { 
+
+        }
+
+        public UserDTO(User user)
+        {
+            this.Bondnumber = user.Bondnumber;
+            this.Lastname = user.Lastname;
+            this.Initials = user.Initials;
+            this.Insertion = user.Initials;
+            this.Name = user.Name;
+            this.Permission = user.Permission;
+            this.AssociationNumber = user.AssociationNumber;
+            this.Birthdate = user.Birthdate;
+            this.Email = user.Email;
+            this.Password = user.Password;
+            this.Gender = user.Gender;
+            this.Phone = user.Phone;
+            this.PhoneWork = user.PhoneWork;
+            this.PhoneMobile = user.PhoneMobile;
+
+            this.Address = user.Address;
+            this.Shifts = user.Shifts;
+        }
     }
 }
