@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Barboek.ClassLib.DAL.Contexts;
+using Barboek.ClassLib.DAL.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,27 +17,152 @@ namespace BarBoekForms
 {
     public partial class RoosterGenereren : Form
     {
-        private readonly DataGridViewButtonColumn btnbewerk = new DataGridViewButtonColumn();
-        private readonly DataGridViewButtonColumn btnverwijder = new DataGridViewButtonColumn();
-        private Club club; //= new Club();
-        private Shift Shift;
+        ShiftMySQLContext ShiftSQL;
+        MemberMySQLContext MemberSQL;
+        string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
+        private bool ConnectToDatabase() 
+        {
+            try
+            {
+                ShiftSQL = new ShiftMySQLContext(connectionString);
+                MemberSQL = new MemberMySQLContext(connectionString);
+            }
+            catch(SqlException x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            return true;
+        }
+
+        List<ShiftDTO> shifts; //= new List<ShiftDTO> { };
+        List<MemberDTO> members; //= new List<MemberDTO> { };
+        private bool noemmaarwatwil()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    shifts = ShiftSQL.GetAllShift();
+                    members = MemberSQL.GetAllMembers();
+                }
+                return true;
+            }
+            catch(SqlException x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+        }
+
+        private readonly DataGridViewButtonColumn btnedit = new DataGridViewButtonColumn();
+        private readonly DataGridViewButtonColumn btndelete = new DataGridViewButtonColumn();
+        
 
    
-        private Shift shifttest = new Shift(new DateTime(2020, 4, 12, 18, 00, 00), new DateTime(2020, 4, 12, 20, 00, 00));
+       
         private Schedule schedule = new Schedule();
 
-        private DateTime test = new DateTime(2020, 4, 30, 00, 00, 00); //lidmaatschap maanden
+        private DateTime test = new DateTime(2020, 1, 30, 00, 00, 00); //lidmaatschap maanden
+        private DateTime test1 = new DateTime(2020, 4, 30, 00, 00, 00);
+        private List<DateTime> subscription = new List<DateTime>();
         public RoosterGenereren()
         {
             InitializeComponent();
             constructDataGridView();
 
             
+            noemmaarwatwil();
+            
+            subscription.Add(test);
+            subscription.Add(test1);
+           
+          foreach (var months in subscription)
+            {
+                ComboDate.Items.Add((Month)months.Month);
+            }
+          
+            List<User> users = new List<User>();
+
+            foreach (var shift in shifts) //use shifts from database
+            {
+                schedule.AddShift(new Shift(shift.DateStart, shift.DateEnd));
+            }
+            foreach (var member in members) //use members from database
+            {
+                users.Add(new User(member.Name));
+            }
+
+            // Schedule the schedule 
+            schedule.PlanShifts(users);
             
            
-           
-            ComboDate.Items.Add(test.Month);
+
+
+
+            // Add user list
+
+            /*
+            // Add users to the list
+            for (int i = 0; i < 10; i++)
+            {
+                users.Add(new User($"User{i + 1}"));
+            }
+
+            
+            // Create schedule
+
+
+            // Add shifts to the schedule
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 01, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 02, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
+
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 03, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 04, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 05, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 06, 59, 00)));
+
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+            schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
+
+           */
+
+            // Print the schedule
+            /*
+            string sSchedule = "";
+            foreach (Shift shift in schedule.Shifts)
+            {
+                sSchedule += shift + "\n";
+            }
+
+            MessageBox.Show(sSchedule);
+            */
+
+
+
         }
+
+
+        enum Month
+            {
+                Januari = 1,
+                Februari = 2,
+                Maart = 3,
+                April = 4,
+                Mei = 5,
+                Juni = 6,
+                Juli = 7,
+                Augustus = 8,
+                September = 9,
+                Oktober = 10,
+                November = 11,
+                December = 12
+            }
+            
+        
 
 
         private void constructDataGridView() //constructs the datagridview
@@ -44,92 +173,56 @@ namespace BarBoekForms
             dataGridView1.Columns[2].Name = "Begin Tijd";
             dataGridView1.Columns[3].Name = "Eind Tijd";
             dataGridView1.Columns[4].Name = "Lid";
-           
-            
-
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             AddbuttonColumn();
-            dataGridView1.Columns.Add(btnbewerk);
-            dataGridView1.Columns.Add(btnverwijder);
-           
+            dataGridView1.Columns.Add(btnedit);
+            dataGridView1.Columns.Add(btndelete);  
         }
         private void AddbuttonColumn() //adds edit and delete buttons
         {
-            btnbewerk.HeaderText = @"Bewerken";
-            btnbewerk.Name = "buttonbewerk";
-            btnbewerk.Text = "Bewerk";
-            btnbewerk.UseColumnTextForButtonValue = true;
+            btnedit.HeaderText = @"Bewerken";
+            btnedit.Name = "buttonbewerk";
+            btnedit.Text = "Bewerk";
+            btnedit.UseColumnTextForButtonValue = true;
 
-            btnverwijder.HeaderText = @"Verwijderen";
-            btnverwijder.Name = "buttonverwijder";
-            btnverwijder.Text = "Verwijder";
-            btnverwijder.UseColumnTextForButtonValue = true;
+            btndelete.HeaderText = @"Verwijderen";
+            btndelete.Name = "buttonverwijder";
+            btndelete.Text = "Verwijder";
+            btndelete.UseColumnTextForButtonValue = true;
         }
 
         private void butgenereren_Click(object sender, EventArgs e)
         {
-            if (ComboDate.Text == "")
+           if (ComboDate.Text == "")
             {
                 MessageBox.Show("Selecteer eerst een maand");
             }
             else
             {
-
-
                 dataGridView1.Rows.Clear();
-                // Add user list
-                List<User> users = new List<User>();
-
-                // Add users to the list
-                for (int i = 0; i < 10; i++)
-                {
-                    users.Add(new User($"User{i + 1}"));
-                }
-
-                // Create schedule
-
-
-                // Add shifts to the schedule
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 20, 22, 00, 00), new DateTime(2020, 1, 20, 23, 59, 00)));
-
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 1, 26, 22, 00, 00), new DateTime(2020, 1, 26, 23, 59, 00)));
-
-                schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
-                schedule.AddShift(new Shift(new DateTime(2020, 4, 10, 22, 00, 00), new DateTime(2020, 4, 10, 23, 59, 00)));
-
-                // Schedule the schedule 
-                schedule.PlanShifts(users);
-
-                // Print the schedule
-                /*
-                string sSchedule = "";
-                foreach (Shift shift in schedule.Shifts)
-                {
-                    sSchedule += shift + "\n";
-                }
-
-                MessageBox.Show(sSchedule);
-                */
-                schedule.AddShift(shifttest);
                 AddRows();
             }
         }
         private void AddRows()
         {
+
+            int monthcheck = 0;
+            
+            for (int i = 0; i < 13; i++)
+            { 
+               if (ComboDate.Text == Convert.ToString((Month)i))
+                {
+                    monthcheck = i;
+                    break;
+                }
+            }
             
             //test variables
             string testevenement = "test";
             
             foreach (Shift shift in schedule.Shifts) //puts the data in the datagrid
             {
-                if (shift.Start.Month == Convert.ToInt32(ComboDate.Text)) //checks the selected month
+                if (shift.Start.Month == monthcheck) //checks the selected month
                 {
                     dataGridView1.Rows.Add(testevenement, shift.Start.Date, shift.Start.TimeOfDay, shift.End.TimeOfDay, shift.User);
                 }
@@ -143,21 +236,25 @@ namespace BarBoekForms
             Shift[] shifts = schedule.Shifts.ToArray();
             if (e.ColumnIndex == 5 && e.RowIndex < shifts.Length)
             {
-                try
+                try //edit button
                 {
+                    //if this button is pressed the user should be able to edit the shift associated with the button, this can be done with an extra screen/form
+                    MessageBox.Show(this, "Hello" + ", how are you", "Shift", MessageBoxButtons.OKCancel);
 
-                    MessageBox.Show(this, "Hello" + ", how are you", "Student", MessageBoxButtons.OKCancel);
+                    //schedule.Shifts[someindex].someproperty = somevalue;
                 }
                 catch (Exception exception)
                 {
                     Console.WriteLine(exception.Message);
+                    
                 }
             }
             if (e.ColumnIndex == 6 && e.RowIndex < shifts.Length)
             {
-                try
+                try //Delete button
                 {
-                    MessageBox.Show(this, "Verwijder", "Shift", MessageBoxButtons.OKCancel);
+                    MessageBox.Show(this, "Delete", "Shift", MessageBoxButtons.OKCancel);
+
                 }
                 catch(Exception exception)
                 {

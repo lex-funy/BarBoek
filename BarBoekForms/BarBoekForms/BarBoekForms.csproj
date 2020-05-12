@@ -68,6 +68,38 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassLib\BLL\AddressRetRepository.cs" />
+    <Compile Include="ClassLib\BLL\ClubRetRepository.cs" />
+    <Compile Include="ClassLib\BLL\MemberRetRepository.cs" />
+    <Compile Include="ClassLib\BLL\PaymentRetRepository.cs" />
+    <Compile Include="ClassLib\BLL\ScheduleRetRepository.cs" />
+    <Compile Include="ClassLib\BLL\ShiftRetRepository.cs" />
+    <Compile Include="ClassLib\DAL\BaseMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\AddressMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\ClubMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iAddressRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iAddressSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iClubRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iClubSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iMemberRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iMemberSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iPaymentRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iPaymentSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iScheduleRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iScheduleSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iShiftRetrieveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\iShiftSaveContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\MemberMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\PaymentMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\ScheduleMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\Contexts\ShiftMySQLContext.cs" />
+    <Compile Include="ClassLib\DAL\DataSetParser.cs" />
+    <Compile Include="ClassLib\DAL\Model\Address.cs" />
+    <Compile Include="ClassLib\DAL\Model\Club.cs" />
+    <Compile Include="ClassLib\DAL\Model\Member.cs" />
+    <Compile Include="ClassLib\DAL\Model\Payment.cs" />
+    <Compile Include="ClassLib\DAL\Model\Schedule.cs" />
+    <Compile Include="ClassLib\DAL\Model\Shift.cs" />
     <Compile Include="Club.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Form1.cs">
