@@ -29,7 +29,7 @@ namespace Barboek.ClassLib.DAL
                 MySqlCommand cmd = conn.CreateCommand();
                 foreach (KeyValuePair<string,string> kvp in parameters)
                 {
-                    SqlParameter para = new SqlParameter();
+                    MySqlParameter para = new MySqlParameter();
                     para.ParameterName = "@" + kvp.Key;
                     para.Value = "@" + kvp.Value;
                     cmd.Parameters.Add(para);
