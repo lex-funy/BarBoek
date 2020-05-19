@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Barboek.ClassLib.DAL
 {
@@ -18,13 +20,13 @@ namespace Barboek.ClassLib.DAL
         }
 
         public DataSet ExecuteQuery(string query, List<KeyValuePair<string,string>> parameters)
-        {
+         {
             DataSet ds = new DataSet();
             try
             {
-                SqlConnection conn = new SqlConnection(connectionString);
-                SqlDataAdapter da = new SqlDataAdapter();
-                SqlCommand cmd = conn.CreateCommand();
+                MySqlConnection conn = new MySqlConnection(connectionString);
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                MySqlCommand cmd = conn.CreateCommand();
                 foreach (KeyValuePair<string,string> kvp in parameters)
                 {
                     SqlParameter para = new SqlParameter();
@@ -40,7 +42,8 @@ namespace Barboek.ClassLib.DAL
                 conn.Close();
             } 
             catch (Exception ex)
-            {
+            { 
+                MessageBox.Show(ex.ToString());
                 return null;
             }
             return ds;
