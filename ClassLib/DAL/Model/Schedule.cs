@@ -8,7 +8,9 @@ namespace Barboek.ClassLib.DAL.Model
 {
     struct ScheduleDTO
     {
+        public int ID { get; set; }
         public string Name { get; set; }
+        public int VerenigingID { get; set; }
         public List<ShiftDTO> Shifts { get; set; }
     }
 }
