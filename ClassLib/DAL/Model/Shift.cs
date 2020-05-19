@@ -8,9 +8,19 @@ namespace Barboek.ClassLib.DAL.Model
 {
     struct ShiftDTO
     {
+        public enum Soort
+        {
+            Eenmalig,
+            Wekelijks,
+            Maandelijks,
+            Evenement
+        }
+
         public int ID { get; set; }
         public string Name { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StartMoment { get; set; }
+        public DateTime EndMoment { get; set; }
+        public Soort EventType { get; set; }
         public int MaxMemberCount { get; set; }
         public List<MemberDTO> Members {get; set;}
     }
