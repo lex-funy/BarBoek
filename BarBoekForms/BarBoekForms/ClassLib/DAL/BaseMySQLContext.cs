@@ -29,7 +29,7 @@ namespace Barboek.ClassLib.DAL
                 {
                     SqlParameter para = new SqlParameter();
                     para.ParameterName = "@" + kvp.Key;
-                    para.Value = "@" + kvp.Value;
+                    para.Value =  "@" + kvp.Value;
                     cmd.Parameters.Add(para);
                 }
                 cmd.CommandText = query;

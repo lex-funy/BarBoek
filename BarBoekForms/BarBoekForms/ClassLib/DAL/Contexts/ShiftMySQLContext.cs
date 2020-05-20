@@ -17,7 +17,7 @@ namespace Barboek.ClassLib.DAL.Contexts
 
         public List<ShiftDTO> GetAllShift()
         {
-            string query = "Select * from shift";
+            string query = "Select * from dienst";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             DataSet results = ExecuteQuery(query, parameters);
 
@@ -37,7 +37,7 @@ namespace Barboek.ClassLib.DAL.Contexts
 
         public ShiftDTO FindShiftById(int id)
         {
-            string query = "Select * from shift where id=@id";
+            string query = "Select * from dienst where id=@id";
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
             parameters.Add(new KeyValuePair<string, string>("id", id.ToString()));
 

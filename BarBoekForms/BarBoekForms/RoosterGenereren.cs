@@ -17,8 +17,11 @@ namespace BarBoekForms
 {
     public partial class RoosterGenereren : Form
     {
+        List<ShiftDTO> Shifts = new List<ShiftDTO> { };
         ShiftMySQLContext ShiftSQL;
         MemberMySQLContext MemberSQL;
+        ScheduleDTO schedules;
+
         string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
         private bool ConnectToDatabase() 
         {
@@ -84,9 +87,9 @@ namespace BarBoekForms
           
             List<User> users = new List<User>();
 
-            foreach (var shift in shifts) //use shifts from database
+            foreach (ShiftDTO shift in shifts) //use shifts from database
             {
-                schedule.AddShift(new Shift(shift.DateStart, shift.DateEnd));
+                schedules.Shifts.Add(shift);
             }
             foreach (var member in members) //use members from database
             {
@@ -94,7 +97,7 @@ namespace BarBoekForms
             }
 
             // Schedule the schedule 
-            schedule.PlanShifts(users);
+            //schedules.(users);
             
            
 
@@ -220,11 +223,11 @@ namespace BarBoekForms
             //test variables
             string testevenement = "test";
             
-            foreach (Shift shift in schedule.Shifts) //puts the data in the datagrid
+            foreach (ShiftDTO shift in schedules.Shifts) //puts the data in the datagrid
             {
-                if (shift.Start.Month == monthcheck) //checks the selected month
+                if (shift.DateStart.Month == monthcheck) //checks the selected month
                 {
-                    dataGridView1.Rows.Add(testevenement, shift.Start.Date, shift.Start.TimeOfDay, shift.End.TimeOfDay, shift.User);
+                    dataGridView1.Rows.Add(testevenement, shift.DateStart.Date, shift.DateStart.TimeOfDay, shift.DateEnd.TimeOfDay);//, shift.User);
                 }
                 
             }
@@ -239,8 +242,8 @@ namespace BarBoekForms
                 try //edit button
                 {
                     //if this button is pressed the user should be able to edit the shift associated with the button, this can be done with an extra screen/form
-                    MessageBox.Show(this, "Hello" + ", how are you", "Shift", MessageBoxButtons.OKCancel);
-
+                    MessageBox.Show(this, "Hello" + ", how are you", "Shift", MessageBoxButtons.YesNo);
+                   
                     //schedule.Shifts[someindex].someproperty = somevalue;
                 }
                 catch (Exception exception)
