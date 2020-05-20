@@ -50,13 +50,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DB.cs" />
+    <Compile Include="BLL\Club\ClubContainer.cs" />
+    <Compile Include="BLL\User\UserContainer.cs" />
+    <Compile Include="DAL\Club\ClubDAL.cs" />
+    <Compile Include="DAL\Club\ClubDTO.cs" />
+    <Compile Include="DAL\Club\IClubContainer.cs" />
+    <Compile Include="DAL\DB.cs" />
+    <Compile Include="DAL\Club\IClubDAL.cs" />
+    <Compile Include="DAL\Member\IMemberDAL.cs" />
+    <Compile Include="DAL\Member\MemberDAL.cs" />
+    <Compile Include="DAL\Member\MemberDTO.cs" />
+    <Compile Include="DAL\User\IUserContainer.cs" />
+    <Compile Include="DAL\User\UserDTO.cs" />
+    <Compile Include="Emailconfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Emailconfirm.Designer.cs">
+      <DependentUpon>Emailconfirm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Home.Designer.cs">
       <DependentUpon>Home.cs</DependentUpon>
     </Compile>
+    <Compile Include="DAL\User\IUserDAL.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registratie.cs">
@@ -65,7 +83,13 @@
     <Compile Include="Registratie.Designer.cs">
       <DependentUpon>Registratie.cs</DependentUpon>
     </Compile>
-    <Compile Include="Club.cs" />
+    <Compile Include="BLL\Club\Club.cs" />
+    <Compile Include="BLL\User\User.cs" />
+    <Compile Include="DAL\User\UserDAL.cs" />
+    <Compile Include="BLL\Member\Member.cs" />
+    <EmbeddedResource Include="Emailconfirm.resx">
+      <DependentUpon>Emailconfirm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Home.resx">
       <DependentUpon>Home.cs</DependentUpon>
     </EmbeddedResource>
@@ -94,5 +118,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

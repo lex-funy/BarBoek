@@ -49,6 +49,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.linkTerug = new System.Windows.Forms.LinkLabel();
+            this.txtBnr = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txtAdd = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -73,6 +77,7 @@
             this.txtContactpersoon.Name = "txtContactpersoon";
             this.txtContactpersoon.Size = new System.Drawing.Size(180, 22);
             this.txtContactpersoon.TabIndex = 2;
+            this.txtContactpersoon.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtContactpersoon_KeyPress);
             // 
             // txtStraat
             // 
@@ -80,6 +85,7 @@
             this.txtStraat.Name = "txtStraat";
             this.txtStraat.Size = new System.Drawing.Size(180, 22);
             this.txtStraat.TabIndex = 3;
+            this.txtStraat.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStraat_KeyPress);
             // 
             // txtPostcode
             // 
@@ -87,6 +93,7 @@
             this.txtPostcode.Name = "txtPostcode";
             this.txtPostcode.Size = new System.Drawing.Size(180, 22);
             this.txtPostcode.TabIndex = 4;
+            this.txtPostcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPostcode_KeyPress);
             // 
             // txtPlaats
             // 
@@ -94,6 +101,7 @@
             this.txtPlaats.Name = "txtPlaats";
             this.txtPlaats.Size = new System.Drawing.Size(180, 22);
             this.txtPlaats.TabIndex = 5;
+            this.txtPlaats.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPlaats_KeyPress);
             // 
             // txtEmail
             // 
@@ -234,11 +242,50 @@
             this.linkTerug.Text = "<Terug";
             this.linkTerug.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkTerug_LinkClicked);
             // 
+            // txtBnr
+            // 
+            this.txtBnr.Location = new System.Drawing.Point(103, 639);
+            this.txtBnr.MaxLength = 6;
+            this.txtBnr.Name = "txtBnr";
+            this.txtBnr.Size = new System.Drawing.Size(180, 22);
+            this.txtBnr.TabIndex = 22;
+            this.txtBnr.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBnr_KeyPress);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(100, 619);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(97, 17);
+            this.label11.TabIndex = 23;
+            this.label11.Text = "Bondnummer*";
+            // 
+            // txtAdd
+            // 
+            this.txtAdd.Location = new System.Drawing.Point(314, 358);
+            this.txtAdd.Name = "txtAdd";
+            this.txtAdd.Size = new System.Drawing.Size(100, 22);
+            this.txtAdd.TabIndex = 24;
+            this.txtAdd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAdd_KeyPress);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(311, 338);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(83, 17);
+            this.label12.TabIndex = 25;
+            this.label12.Text = "Toevoeging";
+            // 
             // Registratie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 742);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.txtAdd);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.txtBnr);
             this.Controls.Add(this.linkTerug);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -290,5 +337,9 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.LinkLabel linkTerug;
+        private System.Windows.Forms.TextBox txtBnr;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtAdd;
+        private System.Windows.Forms.Label label12;
     }
 }

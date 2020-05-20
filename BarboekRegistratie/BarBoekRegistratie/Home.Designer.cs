@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.btnRegistratie = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.txtPostcode = new System.Windows.Forms.TextBox();
             this.btnInloggen = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnRegistratie
@@ -46,19 +47,19 @@
             this.btnRegistratie.UseVisualStyleBackColor = true;
             this.btnRegistratie.Click += new System.EventHandler(this.btnRegistratie_Click);
             // 
-            // textBox1
+            // txtEmail
             // 
-            this.textBox1.Location = new System.Drawing.Point(441, 83);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(152, 22);
-            this.textBox1.TabIndex = 1;
+            this.txtEmail.Location = new System.Drawing.Point(441, 83);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(152, 22);
+            this.txtEmail.TabIndex = 1;
             // 
-            // textBox2
+            // txtPostcode
             // 
-            this.textBox2.Location = new System.Drawing.Point(715, 83);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(152, 22);
-            this.textBox2.TabIndex = 2;
+            this.txtPostcode.Location = new System.Drawing.Point(715, 83);
+            this.txtPostcode.Name = "txtPostcode";
+            this.txtPostcode.Size = new System.Drawing.Size(152, 22);
+            this.txtPostcode.TabIndex = 2;
             // 
             // btnInloggen
             // 
@@ -68,6 +69,7 @@
             this.btnInloggen.TabIndex = 3;
             this.btnInloggen.Text = "Inloggen";
             this.btnInloggen.UseVisualStyleBackColor = true;
+            this.btnInloggen.Click += new System.EventHandler(this.btnInloggen_Click);
             // 
             // label1
             // 
@@ -87,16 +89,28 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "Password:";
             // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(418, 265);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(309, 42);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "U bent ingelogd!";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label3.Visible = false;
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1242, 595);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnInloggen);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtPostcode);
+            this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.btnRegistratie);
             this.Name = "Home";
             this.Text = "Form1";
@@ -108,11 +122,12 @@
         #endregion
 
         private System.Windows.Forms.Button btnRegistratie;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.TextBox txtPostcode;
         private System.Windows.Forms.Button btnInloggen;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
