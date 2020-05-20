@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
+using Barboek.ClassLib.DAL.Model;
+using Barboek.ClassLib.DAL.Contexts;
+using System.Data.SqlClient;
 
 namespace Barboek
 {
@@ -20,88 +23,164 @@ namespace Barboek
             InitializeComponent();
         }
         
-        MySqlConnection Connection;
-        string query;
-        private bool OpenConnection()
+        AddressMySQLContext AddressSQL;
+        List<AddressDTO> addresses = new List<AddressDTO> { };
+        ClubMySQLContext ClubSQL;
+        List<ClubDTO> clubs = new List<ClubDTO> { };
+        MemberMySQLContext MemberSQL;
+        List<MemberDTO> members = new List<MemberDTO> { };
+        PaymentMySQLContext PaymentSQL;
+        List<PaymentDTO> payments = new List<PaymentDTO> { };
+        ScheduleMySQLContext ScheduleSQL;
+        List<ScheduleDTO> schedules = new List<ScheduleDTO> { };
+        ShiftMySQLContext ShiftSQL;
+        List<ShiftDTO> shifts = new List<ShiftDTO> { };
+
+
+        private bool ConnectToDatabase()
         {
-            //Connectiestring benodigd om te verbinden met database
             string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
-            Connection = new MySqlConnection(connectionString);//Daadwerkelijke verbinding
 
-            try // Doe een poging om de database te openen
-            {
-                Connection.Open();
-                return true;
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.ToString()); //Geef de error weer als dit niet lukt
-                return false;
-            }
-        }
-
-        private bool CloseConnection()
-        {
-            try //Doe een poging de connectie te sluiten
-            {
-                Connection.Close();
-                return true;
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.ToString()); //Geef een error weer als dit niet lukt
-                return false;
-            }
-        }
-
-        private bool LoadData()
-        {
             try
             {
-                if (OpenConnection())
-                {
-                    try
-                    {
-                        using (MySqlCommand command = new MySqlCommand(query, Connection)) //maak dan dit command voor de database van de connectie
-                        {
-                            try
-                            {
-                                using (MySqlDataReader reader = command.ExecuteReader()) // voer het command uit
-                                {
-                                    while (reader.Read())
-                                    {
-                                        //DO SOMETHING ¯\_(ツ)_/¯ 
-                                        string memberName = reader.GetString(0);
-                                        int memberId = reader.GetInt32(1);
-                                        DateTime memberBirthDate = reader.GetDateTime(2);
-                                        MessageBox.Show(memberName + " " + memberId + " " + memberBirthDate);
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.ToString());
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                }
+                AddressSQL = new AddressMySQLContext(connectionString);
+                ClubSQL = new ClubMySQLContext(connectionString);
+                MemberSQL = new MemberMySQLContext(connectionString);
+                PaymentSQL = new PaymentMySQLContext(connectionString);
+                ScheduleSQL = new ScheduleMySQLContext(connectionString);
+                ShiftSQL = new ShiftMySQLContext(connectionString);
                 return true;
-            } catch (MySqlException ex)
+            }
+            catch (SqlException ex)
             {
                 MessageBox.Show(ex.ToString());
                 return false;
             }
         }
 
+        private bool AllAddresses()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    addresses = AddressSQL.GetAllAddresses();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        private bool AllClubs()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    clubs = ClubSQL.GetAllClubs();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        private bool AllMembers()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    members = MemberSQL.GetAllMembers();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        private bool AllPayments()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    payments = PaymentSQL.GetAllPayments();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        private bool AllSchedules()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    schedules = ScheduleSQL.GetAllSchedules();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        private bool AllShifts()
+        {
+            try
+            {
+                if (ConnectToDatabase())
+                {
+                    shifts = ShiftSQL.GetAllShift();
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
+        }
+
+        
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            OpenConnection();
-            MessageBox.Show("success");
-            CloseConnection();
+            AllMembers();
+            AllShifts();
+            AllPayments();
+            //AllSchedules();
+            AllAddresses();
+            AllClubs();
+            foreach(MemberDTO m in members)
+            {
+                CLBMembers.Items.Add(m.Name);
+            }
+            
         }
 
         private void setAllInvisibleDisabled()
@@ -138,8 +217,9 @@ namespace Barboek
             {
                 
             }
+            
+            
         }
-
         private void RBDate_CheckedChanged(object sender, EventArgs e)
         {
             if (RBDate.Checked)
@@ -219,6 +299,17 @@ namespace Barboek
         }
 
         private void CBSelectAllMem_CheckedChanged(object sender, EventArgs e)
+        {
+            ClubMySQLContext cmsqlc = new ClubMySQLContext("Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;");
+            cmsqlc.GetAllClubs();
+            List<ClubDTO> list = cmsqlc.GetAllClubs();
+            foreach(ClubDTO c in list)
+            {
+                MessageBox.Show(c.ToString());
+            }
+        }
+
+        private void CLBGroups_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
