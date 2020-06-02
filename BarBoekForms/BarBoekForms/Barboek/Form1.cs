@@ -1,4 +1,8 @@
-﻿using System;
+﻿//TODO = ¯\_(ツ)_/¯
+//SECTION = (~˘▾˘)~
+//SUB-SECTION = ʕ•́ᴥ•̀ʔっ
+// Waarom? Het maakt mn code een beetje eigen en het is leuk om doorheen te zien en opvallend. =D
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +16,7 @@ using System.Windows.Forms;
 using Barboek.ClassLib.DAL.Model;
 using Barboek.ClassLib.DAL.Contexts;
 using System.Data.SqlClient;
+using MySqlX.XDevAPI.Relational;
 
 namespace Barboek
 {
@@ -22,7 +27,8 @@ namespace Barboek
         {
             InitializeComponent();
         }
-        
+
+        //(~˘▾˘)~ Universal Variables (~˘▾˘)~
         AddressMySQLContext AddressSQL;
         List<AddressDTO> addresses = new List<AddressDTO> { };
         ClubMySQLContext ClubSQL;
@@ -35,8 +41,11 @@ namespace Barboek
         List<ScheduleDTO> schedules = new List<ScheduleDTO> { };
         ShiftMySQLContext ShiftSQL;
         List<ShiftDTO> shifts = new List<ShiftDTO> { };
+        List<string> tables = new List<string> { "adres", "betaling", "certificaat", "certificaat-lid-combo", "dienst", "leden", "lid-dienst-combo", "nietbeschikbaar", "schema", "schema-dienst-combo", "vereniging" };
+        List<string> usedTables = new List<string> { };
+        List<string> usedColumns = new List<string> { };
 
-
+        //(~˘▾˘)~ MySQL (~˘▾˘)~
         private bool ConnectToDatabase()
         {
             string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
@@ -57,7 +66,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllAddresses()
         {
             try
@@ -75,7 +83,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllClubs()
         {
             try
@@ -93,7 +100,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllMembers()
         {
             try
@@ -111,7 +117,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllPayments()
         {
             try
@@ -129,7 +134,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllSchedules()
         {
             try
@@ -147,7 +151,6 @@ namespace Barboek
                 return false;
             }
         }
-
         private bool AllShifts()
         {
             try
@@ -166,22 +169,22 @@ namespace Barboek
             }
         }
 
-        
-
         private void Form1_Load(object sender, EventArgs e)
         {
             AllMembers();
             AllShifts();
             AllPayments();
-            //AllSchedules();
+            AllSchedules();
             AllAddresses();
             AllClubs();
-            foreach(MemberDTO m in members)
+            foreach (MemberDTO m in members)
             {
                 CLBMembers.Items.Add(m.Name);
             }
-            
+            fillLBTables();
+
         }
+
 
         private void setAllInvisibleDisabled()
         {
@@ -204,9 +207,12 @@ namespace Barboek
             TBFrom.Visible = false;
             TBFrom.Enabled = false;
         }
+
+        //(~˘▾˘)~ Interactions with Interface (~˘▾˘)~
+        //ʕ•́ᴥ•̀ʔっ Radiobox Changed ʕ•́ᴥ•̀ʔっ
         private void RBName_CheckedChanged(object sender, EventArgs e)
         {
-            if(RBName.Checked)
+            if (RBName.Checked)
             {
                 setAllInvisibleDisabled();
                 LContains.Visible = true;
@@ -215,10 +221,8 @@ namespace Barboek
             }
             else
             {
-                
+
             }
-            
-            
         }
         private void RBDate_CheckedChanged(object sender, EventArgs e)
         {
@@ -231,14 +235,13 @@ namespace Barboek
                 dtFrom.Enabled = true;
                 dtTill.Visible = true;
                 dtTill.Enabled = true;
-                
+
             }
             else
             {
 
             }
         }
-
         private void RBAge_CheckedChanged(object sender, EventArgs e)
         {
             if (RBAge.Checked)
@@ -256,7 +259,6 @@ namespace Barboek
 
             }
         }
-
         private void RBExceptionAbsence_CheckedChanged(object sender, EventArgs e)
         {
             if (RBExceptionAbsence.Checked)
@@ -274,7 +276,6 @@ namespace Barboek
 
             }
         }
-
         private void RBGroup_CheckedChanged(object sender, EventArgs e)
         {
             if (RBGroup.Checked)
@@ -285,7 +286,7 @@ namespace Barboek
                 CLBGroups.Enabled = true;
                 CBSelectAllGro.Visible = true;
                 CBSelectAllGro.Enabled = true;
-                
+
             }
             else
             {
@@ -293,25 +294,170 @@ namespace Barboek
             }
         }
 
+        //ʕ•́ᴥ•̀ʔっ Select All Button ʕ•́ᴥ•̀ʔっ
         private void CBSelectAllGro_CheckedChanged(object sender, EventArgs e)
         {
-
+            selectAllInCheckBoxList(CBSelectAllGro, CLBGroups);
         }
-
         private void CBSelectAllMem_CheckedChanged(object sender, EventArgs e)
         {
-            ClubMySQLContext cmsqlc = new ClubMySQLContext("Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;");
-            cmsqlc.GetAllClubs();
-            List<ClubDTO> list = cmsqlc.GetAllClubs();
-            foreach(ClubDTO c in list)
+            selectAllInCheckBoxList(CBSelectAllMem, CLBMembers);
+        }
+        private void CBSelectAllColumns_CheckedChanged(object sender, EventArgs e)
+        {
+            selectAllInCheckBoxList(CBSelectAllColumns, CLBColumns);
+        }
+
+        //ʕ•́ᴥ•̀ʔっ Select different Tables ʕ•́ᴥ•̀ʔっ 
+        private void LBTables_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected = LBTables.SelectedItem.ToString();
+            fillForSelected(selected);
+        }
+
+        private void selectAllInCheckBoxList(CheckBox checkChanged, CheckedListBox toSelectAll)
+        {
+            bool isChecked = checkChanged.Checked;
+            for (int i = 0; i < toSelectAll.Items.Count; i++)
             {
-                MessageBox.Show(c.ToString());
+                toSelectAll.SetItemChecked(i, isChecked);
             }
         }
 
-        private void CLBGroups_SelectedIndexChanged(object sender, EventArgs e)
+        //ʕ•́ᴥ•̀ʔっ Buttons ʕ•́ᴥ•̀ʔっ
+        private void bAddSpecifier_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void bAddColumn_Click(object sender, EventArgs e)
+        {
+            addSelectedColumns();
+        }
+
+        private void BSave_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //(~˘▾˘)~ Fill Stuff (~˘▾˘)~
+        private void fillLBTables()
+        {
+            foreach (string table in tables)
+            {
+                LBTables.Items.Add(table);
+            }
+        }
+        private void fillForSelected(string selected)
+        {
+            CLBColumns.Items.Clear();
+            List<string> columns;
+            switch (selected)
+            {
+                case "adres": { columns = fillForAdres(); break; };
+                case "betaling": { columns = fillForBetaling(); break; };
+                case "certificaat": { columns = fillForCertificaat(); break; };
+                case "certificaat-lid-combo": { columns = fillForCertificaatLidCombo(); break; };
+                case "dienst": { columns = fillForDienst(); break; };
+                case "leden": { columns = fillForLeden(); break; };
+                case "lid-dienst-combo": { columns = fillForLidDienstCombo(); break; };
+                case "nietbeschikbaar": { columns = fillForNietBeschikbaar(); break; };
+                case "schema": { columns = fillForSchema(); break; };
+                case "schema-dienst-combo": { columns = fillForSchemaDienstCombo(); break; };
+                case "vereniging": { columns = fillForVereniging(); break; };
+                default: { columns = new List<string> { "Geen tabel geselecteerd" }; break; };
+            }
+
+            foreach (string columnName in columns)
+            {
+                CLBColumns.Items.Add(columnName);
+                int index = CLBColumns.Items.IndexOf(columnName);
+                if (index != -1)
+                {
+                    if (usedColumns.Contains(LBTables.SelectedItem.ToString() + "." + columnName))
+                    {
+                        CLBColumns.SetItemChecked(index, true);
+                    }
+                }
+            }
+        }
+
+        private List<string> fillForAdres()
+        {
+            List<string> columns = new List<string> { "ID", "zipcode", "number", "addition" };
+            return columns;
+        }
+        private List<string> fillForBetaling()
+        {
+            List<string> columns = new List<string> { "ID", "Lid_Dienst_ID", "geslaagd" };
+            return columns;
+        }
+        private List<string> fillForCertificaat()
+        {
+            List<string> columns = new List<string> { "ID", "naam" };
+            return columns;
+        }
+        private List<string> fillForCertificaatLidCombo()
+        {
+            List<string> columns = new List<string> { "ID", "certificaatID", "lidID", "behaaldOp", "verstrekingsDatum" };
+            return columns;
+        }
+        private List<string> fillForDienst()
+        {
+            List<string> columns = new List<string> { "ID", "naam", "startMoment", "eindMoment", "soort", "maxLeden" };
+            return columns;
+        }
+        private List<string> fillForLeden()
+        {
+            List<string> columns = new List<string> { "ID", "naam", "adresID", "geboortedatum", "email", "toegang", "bondsnummer", "achternaam", "voorletters", "tussenvoegsel", "telefoon", "geslacht", "telefoonWerk", "telefoonMobiel" };
+            return columns;
+        }
+        private List<string> fillForLidDienstCombo()
+        {
+            List<string> columns = new List<string> { "ID", "lidID", "dienstID" };
+            return columns;
+        }
+        private List<string> fillForNietBeschikbaar()
+        {
+            List<string> columns = new List<string> { "ID", "lidID", "beginMoment", "eindMoment" };
+            return columns;
+        }
+        private List<string> fillForSchema()
+        {
+            List<string> columns = new List<string> { "ID", "naam", "verenigingID" };
+            return columns;
+        }
+        private List<string> fillForSchemaDienstCombo()
+        {
+            List<string> columns = new List<string> { "ID", "dienstID", "schemaID" };
+            return columns;
+        }
+        private List<string> fillForVereniging()
+        {
+            List<string> columns = new List<string> { "ID", "naam", "adresID", "email", "schemaID" };
+            return columns;
+        }
+
+        private void addSelectedColumns()
+        {
+            foreach (string column in CLBColumns.CheckedItems)
+            {
+                string usedTable = LBTables.SelectedItem.ToString();
+                string toUse = usedTable + "." + column;
+                if (!usedColumns.Contains(toUse))
+                {
+                    usedColumns.Add(toUse);
+                }
+                    
+            }
+            if (LBTables.SelectedItem != null)
+            {
+                usedTables.Add(LBTables.SelectedItem.ToString());
+            }
+            foreach (string s in usedColumns)
+            {
+                MessageBox.Show(s);
+            }
         }
     }
 }
