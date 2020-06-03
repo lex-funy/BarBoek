@@ -46,6 +46,11 @@ namespace Barboek
         List<string> tables = new List<string> { "adres", "betaling", "certificaat", "certificaat-lid-combo", "dienst", "leden", "lid-dienst-combo", "nietbeschikbaar", "schema", "schema-dienst-combo", "vereniging" };
         List<string> usedTables = new List<string> { };
         List<string> usedColumns = new List<string> { };
+        string NameSQLSpecifier = "";
+        string ShiftDateSQLSpecifier = "";
+        string AgeSQLSpecifier = "";
+        string AbsenceSQLSpecifier = "";
+        string GroupSQLSpecifier = "";
 
         //(~˘▾˘)~ MySQL (~˘▾˘)~
         private bool ConnectToDatabase()
@@ -466,11 +471,11 @@ namespace Barboek
         {
             switch (rbSelected)
             {
-                case "name": addWhenNameRBSelected(); break;
-                case "date": addWhenDateRBSelected(); break;
-                case "age": addWhenAgeRBSelected(); break;
-                case "exceptionAbsence": addWhenExceptionRBSelected(); break;
-                case "group": addWhenGroupRBSelected(); break;
+                case "name": NameSQLSpecifier = NameSQLSpecifier + addWhenNameRBSelected(); break;
+                case "date": ShiftDateSQLSpecifier = ShiftDateSQLSpecifier + addWhenDateRBSelected(); break;
+                case "age": AgeSQLSpecifier = AgeSQLSpecifier + addWhenAgeRBSelected(); break;
+                case "exceptionAbsence": AbsenceSQLSpecifier = AbsenceSQLSpecifier + addWhenExceptionRBSelected(); break;
+                case "group": GroupSQLSpecifier = GroupSQLSpecifier + addWhenGroupRBSelected(); break;
                 case "none": addWhenNoRBSelected(); break;
                 default: addWhenNoRBSelected(); break;
             }
@@ -542,10 +547,8 @@ namespace Barboek
             string fromInput = TBFrom.Text;
             string tillInput = TBTill.Text;
             string ageFilter = "";
-            int fromAge;
-            bool successFrom = int.TryParse(fromInput, out fromAge);
-            int tillAge;
-            bool successTill = int.TryParse(tillInput, out tillAge);
+            bool successFrom = int.TryParse(fromInput, out int fromAge);
+            bool successTill = int.TryParse(tillInput, out int tillAge);
             DateTime Today = DateTime.Now;
             DateTime BirthdayFrom;
             DateTime BirthdayTill;
@@ -585,17 +588,48 @@ namespace Barboek
             return ageFilter;
 
         }
-        private void addWhenExceptionRBSelected()
+        private string addWhenExceptionRBSelected()
         {
 
+            DateTime dtFromInput = dtFrom.Value;
+            DateTime dtTillInput = dtTill.Value;
+            string dateFilter = "";
+            //¯\_(ツ)_/¯ Add Absence to Database / Class Diagram ¯\_(ツ)_/¯
+            if (dtFromInput == null && dtTillInput != null)
+            {
+                /*dateFilter = "(`dienst`.eindMoment > " + dtTillInput.ToString() + ")";*/
+            }
+            else if (dtTillInput == null && dtFromInput != null)
+            {
+                //dateFilter = "(`dienst`.startMoment < " + dtTillInput.ToString() + ")";
+            }
+            else if (dtFromInput < dtTillInput)
+            {
+                //dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") AND (`dienst`.eindMoment < " + dtTillInput.ToString() + "))";
+            }
+            else if (dtFromInput > dtTillInput)
+            {
+                //dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") OR (`dienst`.eindMoment < " + dtTillInput.ToString() + "))";
+            }
+            else if (dtFromInput == null && dtTillInput == null)
+            {
+                //dateFilter = "";
+            }
+            return dateFilter;
         }
-        private void addWhenGroupRBSelected()
+        private string addWhenGroupRBSelected()
         {
-
+            string groupContains = "";
+            if (TBContains.Text != null)
+            {
+                //¯\_(ツ)_/¯ ADD GROUPS TO DATABASE + CLASS DIAGRAM ¯\_(ツ)_/¯
+                //groupContains = "((`leden`.naam LIKE '%" + TBContains.Text + "%') OR (`leden`.achternaam LIKE '%" + TBContains.Text + "%'))";
+            }
+            return groupContains;
         }
         private void addWhenNoRBSelected()
         {
-
+            MessageBox.Show("Er is geen RadioButton geselecteerd.");
         }
 
     }
