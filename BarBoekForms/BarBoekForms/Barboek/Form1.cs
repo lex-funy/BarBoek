@@ -17,6 +17,8 @@ using Barboek.ClassLib.DAL.Model;
 using Barboek.ClassLib.DAL.Contexts;
 using System.Data.SqlClient;
 using MySqlX.XDevAPI.Relational;
+using System.Windows.Forms.VisualStyles;
+using Org.BouncyCastle.Asn1.BC;
 
 namespace Barboek
 {
@@ -327,7 +329,8 @@ namespace Barboek
         //ʕ•́ᴥ•̀ʔっ Buttons ʕ•́ᴥ•̀ʔっ
         private void bAddSpecifier_Click(object sender, EventArgs e)
         {
-
+            string rb = findSelectedRadioButton();
+            addSpecifier(rb);
         }
 
         private void bAddColumn_Click(object sender, EventArgs e)
@@ -443,12 +446,12 @@ namespace Barboek
             foreach (string column in CLBColumns.CheckedItems)
             {
                 string usedTable = LBTables.SelectedItem.ToString();
-                string toUse = usedTable + "." + column;
+                string toUse = "`" + usedTable + "`." + column;
                 if (!usedColumns.Contains(toUse))
                 {
                     usedColumns.Add(toUse);
                 }
-                    
+
             }
             if (LBTables.SelectedItem != null)
             {
@@ -459,5 +462,141 @@ namespace Barboek
                 MessageBox.Show(s);
             }
         }
+        private void addSpecifier(string rbSelected)
+        {
+            switch (rbSelected)
+            {
+                case "name": addWhenNameRBSelected(); break;
+                case "date": addWhenDateRBSelected(); break;
+                case "age": addWhenAgeRBSelected(); break;
+                case "exceptionAbsence": addWhenExceptionRBSelected(); break;
+                case "group": addWhenGroupRBSelected(); break;
+                case "none": addWhenNoRBSelected(); break;
+                default: addWhenNoRBSelected(); break;
+            }
+        }
+        private string findSelectedRadioButton()
+        {
+            if (RBName.Checked)
+            {
+                return "name";
+            }
+            else if (RBDate.Checked)
+            {
+                return "date";
+            }
+            else if (RBAge.Checked)
+            {
+                return "age";
+            }
+            else if (RBExceptionAbsence.Checked)
+            {
+                return "exceptionAbsence";
+            }
+            else if (RBGroup.Checked)
+            {
+                return "group";
+            }
+            return "none";
+        }
+        private string addWhenNameRBSelected()
+        {
+            string nameContains = "";
+            if (TBContains.Text != null)
+            {
+                nameContains = "((`leden`.naam LIKE '%" + TBContains.Text + "%') OR (`leden`.achternaam LIKE '%" + TBContains.Text + "%'))";
+            }
+            return nameContains;
+        }
+        private string addWhenDateRBSelected()
+        {
+            DateTime dtFromInput = dtFrom.Value;
+            DateTime dtTillInput = dtTill.Value;
+            string dateFilter = "";
+            if (dtFromInput == null && dtTillInput != null)
+            {
+                dateFilter = "(`dienst`.eindMoment > " + dtTillInput.ToString() + ")";
+            }
+            else if (dtTillInput == null && dtFromInput != null)
+            {
+                dateFilter = "(`dienst`.startMoment < " + dtTillInput.ToString() + ")";
+            }
+            else if (dtFromInput < dtTillInput)
+            {
+                dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") AND (`dienst`.eindMoment < " + dtTillInput.ToString() +"))";
+            }
+            else if (dtFromInput > dtTillInput)
+            {
+                dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") OR (`dienst`.eindMoment < " + dtTillInput.ToString() + "))";
+            }
+            else if (dtFromInput == null && dtTillInput == null)
+            {
+                dateFilter = "";
+            }
+            return dateFilter;
+
+
+        }
+        private string addWhenAgeRBSelected()
+        {
+            string fromInput = TBFrom.Text;
+            string tillInput = TBTill.Text;
+            string ageFilter = "";
+            int fromAge;
+            bool successFrom = int.TryParse(fromInput, out fromAge);
+            int tillAge;
+            bool successTill = int.TryParse(tillInput, out tillAge);
+            DateTime Today = DateTime.Now;
+            DateTime BirthdayFrom;
+            DateTime BirthdayTill;
+            if (successFrom == false && successTill == true)
+            {
+                BirthdayTill = Today.AddYears((tillAge) * -1);
+                ageFilter = "(`leden`.geboortedatum < " + BirthdayTill.ToString() + ")";
+            }
+            else if (successTill == false && successFrom == true)
+            {
+                BirthdayFrom = Today.AddYears((fromAge + 1) * -1);
+                ageFilter = "(`leden`.geboortedatum >  " + BirthdayFrom.ToString() + ")";
+            }
+            else if (successFrom == false && successTill == false)
+            {
+                ageFilter = "";
+                
+            }
+            else if (fromAge > tillAge)
+            {
+                BirthdayFrom = Today.AddYears((fromAge + 1) * -1);
+                BirthdayTill = Today.AddYears((tillAge) * -1);
+                ageFilter = "((`leden`.geboortedatum < " + BirthdayTill.ToString() + ") OR (`leden`.geboortedatum >  " + BirthdayFrom.ToString() + "))";
+            }
+            else if (fromAge < tillAge)
+            {
+                BirthdayFrom = Today.AddYears((fromAge + 1) * -1);
+                BirthdayTill = Today.AddYears((tillAge) * -1);
+                ageFilter = "((`leden`.geboortedatum < " + BirthdayTill.ToString() + ") AND (`leden`.geboortedatum >  " + BirthdayFrom.ToString() + "))";
+            }
+            else if (fromAge == tillAge)
+            {
+                BirthdayFrom = Today.AddYears((fromAge + 1) * -1);
+                BirthdayTill = Today.AddYears((tillAge) * -1);
+                ageFilter = "((`leden`.geboortedatum < " + BirthdayTill.ToString() + ") AND (`leden`.geboortedatum >  " + BirthdayFrom.ToString() + "))";
+            }
+            return ageFilter;
+
+        }
+        private void addWhenExceptionRBSelected()
+        {
+
+        }
+        private void addWhenGroupRBSelected()
+        {
+
+        }
+        private void addWhenNoRBSelected()
+        {
+
+        }
+
     }
 }
