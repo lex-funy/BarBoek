@@ -59,6 +59,9 @@
             this.CLBColumns = new System.Windows.Forms.CheckedListBox();
             this.LBTables = new System.Windows.Forms.ListBox();
             this.bAddSpecifier = new System.Windows.Forms.Button();
+            this.bGenerateRapport = new System.Windows.Forms.Button();
+            this.dgvShowResults = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShowResults)).BeginInit();
             this.SuspendLayout();
             // 
             // CBSelectAllGro
@@ -348,11 +351,33 @@
             this.bAddSpecifier.UseVisualStyleBackColor = true;
             this.bAddSpecifier.Click += new System.EventHandler(this.bAddSpecifier_Click);
             // 
+            // bGenerateRapport
+            // 
+            this.bGenerateRapport.Location = new System.Drawing.Point(1151, 435);
+            this.bGenerateRapport.Name = "bGenerateRapport";
+            this.bGenerateRapport.Size = new System.Drawing.Size(96, 41);
+            this.bGenerateRapport.TabIndex = 33;
+            this.bGenerateRapport.Text = "Genereren";
+            this.bGenerateRapport.UseVisualStyleBackColor = true;
+            this.bGenerateRapport.Click += new System.EventHandler(this.bGenerateRapport_Click);
+            // 
+            // dgvShowResults
+            // 
+            this.dgvShowResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvShowResults.Location = new System.Drawing.Point(265, 337);
+            this.dgvShowResults.Name = "dgvShowResults";
+            this.dgvShowResults.RowHeadersWidth = 51;
+            this.dgvShowResults.RowTemplate.Height = 24;
+            this.dgvShowResults.Size = new System.Drawing.Size(240, 150);
+            this.dgvShowResults.TabIndex = 34;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1268, 488);
+            this.Controls.Add(this.dgvShowResults);
+            this.Controls.Add(this.bGenerateRapport);
             this.Controls.Add(this.bAddSpecifier);
             this.Controls.Add(this.LBTables);
             this.Controls.Add(this.label2);
@@ -387,6 +412,7 @@
             this.Name = "Form1";
             this.Text = "Studenten";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShowResults)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -425,6 +451,8 @@
         private System.Windows.Forms.CheckedListBox CLBColumns;
         private System.Windows.Forms.ListBox LBTables;
         private System.Windows.Forms.Button bAddSpecifier;
+        private System.Windows.Forms.Button bGenerateRapport;
+        private System.Windows.Forms.DataGridView dgvShowResults;
     }
 }
 

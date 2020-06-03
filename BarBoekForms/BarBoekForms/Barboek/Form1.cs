@@ -19,6 +19,8 @@ using System.Data.SqlClient;
 using MySqlX.XDevAPI.Relational;
 using System.Windows.Forms.VisualStyles;
 using Org.BouncyCastle.Asn1.BC;
+using System.Threading;
+using Barboek.ClassLib.DAL;
 
 namespace Barboek
 {
@@ -31,18 +33,8 @@ namespace Barboek
         }
 
         //(~˘▾˘)~ Universal Variables (~˘▾˘)~
-        AddressMySQLContext AddressSQL;
-        List<AddressDTO> addresses = new List<AddressDTO> { };
-        ClubMySQLContext ClubSQL;
-        List<ClubDTO> clubs = new List<ClubDTO> { };
         MemberMySQLContext MemberSQL;
         List<MemberDTO> members = new List<MemberDTO> { };
-        PaymentMySQLContext PaymentSQL;
-        List<PaymentDTO> payments = new List<PaymentDTO> { };
-        ScheduleMySQLContext ScheduleSQL;
-        List<ScheduleDTO> schedules = new List<ScheduleDTO> { };
-        ShiftMySQLContext ShiftSQL;
-        List<ShiftDTO> shifts = new List<ShiftDTO> { };
         List<string> tables = new List<string> { "adres", "betaling", "certificaat", "certificaat-lid-combo", "dienst", "leden", "lid-dienst-combo", "nietbeschikbaar", "schema", "schema-dienst-combo", "vereniging" };
         List<string> usedTables = new List<string> { };
         List<string> usedColumns = new List<string> { };
@@ -51,20 +43,13 @@ namespace Barboek
         string AgeSQLSpecifier = "";
         string AbsenceSQLSpecifier = "";
         string GroupSQLSpecifier = "";
-
+        readonly string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
         //(~˘▾˘)~ MySQL (~˘▾˘)~
         private bool ConnectToDatabase()
         {
-            string connectionString = "Server=84.31.134.4;Database=barboekmain;User Id=newuser;Password=test;";
-
             try
             {
-                AddressSQL = new AddressMySQLContext(connectionString);
-                ClubSQL = new ClubMySQLContext(connectionString);
                 MemberSQL = new MemberMySQLContext(connectionString);
-                PaymentSQL = new PaymentMySQLContext(connectionString);
-                ScheduleSQL = new ScheduleMySQLContext(connectionString);
-                ShiftSQL = new ShiftMySQLContext(connectionString);
                 return true;
             }
             catch (SqlException ex)
@@ -73,40 +58,7 @@ namespace Barboek
                 return false;
             }
         }
-        private bool AllAddresses()
-        {
-            try
-            {
-                if (ConnectToDatabase())
-                {
-                    addresses = AddressSQL.GetAllAddresses();
-                }
-                return true;
 
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.ToString());
-                return false;
-            }
-        }
-        private bool AllClubs()
-        {
-            try
-            {
-                if (ConnectToDatabase())
-                {
-                    clubs = ClubSQL.GetAllClubs();
-                }
-                return true;
-
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.ToString());
-                return false;
-            }
-        }
         private bool AllMembers()
         {
             try
@@ -124,66 +76,62 @@ namespace Barboek
                 return false;
             }
         }
-        private bool AllPayments()
+
+        private bool ExecuteGivenQuery()
         {
-            try
+            if (ConnectToDatabase())
             {
-                if (ConnectToDatabase())
-                {
-                    payments = PaymentSQL.GetAllPayments();
-                }
+                string query = composeQuery();
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                DataSet results = ExecuteQuery(query, parameters);
+                dgvShowResults.AutoGenerateColumns = true;
+                dgvShowResults.DataSource = results; // dataset
+                dgvShowResults.DataMember = "Results";
+
                 return true;
 
             }
-            catch (SqlException ex)
+            else
             {
-                MessageBox.Show(ex.ToString());
                 return false;
             }
         }
-        private bool AllSchedules()
+
+        public DataSet ExecuteQuery(string query, List<KeyValuePair<string, string>> parameters)
         {
+            DataSet ds = new DataSet();
             try
             {
-                if (ConnectToDatabase())
+                MySqlConnection conn = new MySqlConnection(connectionString);
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                MySqlCommand cmd = conn.CreateCommand();
+                foreach (KeyValuePair<string, string> kvp in parameters)
                 {
-                    schedules = ScheduleSQL.GetAllSchedules();
+                    MySqlParameter para = new MySqlParameter();
+                    para.ParameterName = "@" + kvp.Key;
+                    para.Value = "@" + kvp.Value;
+                    cmd.Parameters.Add(para);
                 }
-                return true;
+                cmd.CommandText = query;
+                da.SelectCommand = cmd;
 
+                conn.Open();
+                da.Fill(ds);
+                conn.Close();
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                return false;
+                return null;
             }
+            return ds;
         }
-        private bool AllShifts()
-        {
-            try
-            {
-                if (ConnectToDatabase())
-                {
-                    shifts = ShiftSQL.GetAllShift();
-                }
-                return true;
 
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.ToString());
-                return false;
-            }
-        }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
             AllMembers();
-            AllShifts();
-            AllPayments();
-            AllSchedules();
-            AllAddresses();
-            AllClubs();
             foreach (MemberDTO m in members)
             {
                 CLBMembers.Items.Add(m.Name);
@@ -191,8 +139,6 @@ namespace Barboek
             fillLBTables();
 
         }
-
-
         private void setAllInvisibleDisabled()
         {
             LFrom.Visible = false;
@@ -213,6 +159,8 @@ namespace Barboek
             TBTill.Enabled = false;
             TBFrom.Visible = false;
             TBFrom.Enabled = false;
+            dgvShowResults.Visible = false;
+            dgvShowResults.Enabled = false;
         }
 
         //(~˘▾˘)~ Interactions with Interface (~˘▾˘)~
@@ -225,6 +173,7 @@ namespace Barboek
                 LContains.Visible = true;
                 TBContains.Enabled = true;
                 TBContains.Visible = true;
+                TBContains.Clear();
             }
             else
             {
@@ -260,6 +209,8 @@ namespace Barboek
                 LUntill.Visible = true;
                 TBTill.Visible = true;
                 TBTill.Enabled = true;
+                TBFrom.Clear();
+                TBTill.Clear();
             }
             else
             {
@@ -293,7 +244,6 @@ namespace Barboek
                 CLBGroups.Enabled = true;
                 CBSelectAllGro.Visible = true;
                 CBSelectAllGro.Enabled = true;
-
             }
             else
             {
@@ -345,7 +295,13 @@ namespace Barboek
 
         private void BSave_Click(object sender, EventArgs e)
         {
-
+            // ¯\_(ツ)_/¯ Save Template to Database ¯\_(ツ)_/¯
+        }
+        private void bGenerateRapport_Click(object sender, EventArgs e)
+        {
+            ExecuteGivenQuery();
+            dgvShowResults.Visible = true;
+            dgvShowResults.Enabled = true;
         }
 
         //(~˘▾˘)~ Fill Stuff (~˘▾˘)~
@@ -390,6 +346,7 @@ namespace Barboek
             }
         }
 
+        //ʕ•́ᴥ•̀ʔっ Fill for specific table ʕ•́ᴥ•̀ʔっ 
         private List<string> fillForAdres()
         {
             List<string> columns = new List<string> { "ID", "zipcode", "number", "addition" };
@@ -446,6 +403,20 @@ namespace Barboek
             return columns;
         }
 
+        //(~˘▾˘)~ Add stuff (~˘▾˘)~
+        private void addSpecifier(string rbSelected)
+        {
+            switch (rbSelected)
+            {
+                case "name": NameSQLSpecifier = NameSQLSpecifier + addWhenNameRBSelected(); break;
+                case "date": ShiftDateSQLSpecifier = ShiftDateSQLSpecifier + addWhenDateRBSelected(); break;
+                case "age": AgeSQLSpecifier = AgeSQLSpecifier + addWhenAgeRBSelected(); break;
+                case "exceptionAbsence": AbsenceSQLSpecifier = AbsenceSQLSpecifier + addWhenExceptionRBSelected(); break;
+                case "group": GroupSQLSpecifier = GroupSQLSpecifier + addWhenGroupRBSelected(); break;
+                case "none": addWhenNoRBSelected(); break;
+                default: addWhenNoRBSelected(); break;
+            }
+        }
         private void addSelectedColumns()
         {
             foreach (string column in CLBColumns.CheckedItems)
@@ -467,43 +438,8 @@ namespace Barboek
                 MessageBox.Show(s);
             }
         }
-        private void addSpecifier(string rbSelected)
-        {
-            switch (rbSelected)
-            {
-                case "name": NameSQLSpecifier = NameSQLSpecifier + addWhenNameRBSelected(); break;
-                case "date": ShiftDateSQLSpecifier = ShiftDateSQLSpecifier + addWhenDateRBSelected(); break;
-                case "age": AgeSQLSpecifier = AgeSQLSpecifier + addWhenAgeRBSelected(); break;
-                case "exceptionAbsence": AbsenceSQLSpecifier = AbsenceSQLSpecifier + addWhenExceptionRBSelected(); break;
-                case "group": GroupSQLSpecifier = GroupSQLSpecifier + addWhenGroupRBSelected(); break;
-                case "none": addWhenNoRBSelected(); break;
-                default: addWhenNoRBSelected(); break;
-            }
-        }
-        private string findSelectedRadioButton()
-        {
-            if (RBName.Checked)
-            {
-                return "name";
-            }
-            else if (RBDate.Checked)
-            {
-                return "date";
-            }
-            else if (RBAge.Checked)
-            {
-                return "age";
-            }
-            else if (RBExceptionAbsence.Checked)
-            {
-                return "exceptionAbsence";
-            }
-            else if (RBGroup.Checked)
-            {
-                return "group";
-            }
-            return "none";
-        }
+
+        //ʕ•́ᴥ•̀ʔっ Add specific stuff ʕ•́ᴥ•̀ʔっ 
         private string addWhenNameRBSelected()
         {
             string nameContains = "";
@@ -528,7 +464,7 @@ namespace Barboek
             }
             else if (dtFromInput < dtTillInput)
             {
-                dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") AND (`dienst`.eindMoment < " + dtTillInput.ToString() +"))";
+                dateFilter = "((`dienst`.startMoment > " + dtFromInput.ToString() + ") AND (`dienst`.eindMoment < " + dtTillInput.ToString() + "))";
             }
             else if (dtFromInput > dtTillInput)
             {
@@ -565,7 +501,7 @@ namespace Barboek
             else if (successFrom == false && successTill == false)
             {
                 ageFilter = "";
-                
+
             }
             else if (fromAge > tillAge)
             {
@@ -632,5 +568,105 @@ namespace Barboek
             MessageBox.Show("Er is geen RadioButton geselecteerd.");
         }
 
+        //(~˘▾˘)~ Find stuff (~˘▾˘)~
+        private string findSelectedRadioButton()
+        {
+            if (RBName.Checked)
+            {
+                return "name";
+            }
+            else if (RBDate.Checked)
+            {
+                return "date";
+            }
+            else if (RBAge.Checked)
+            {
+                return "age";
+            }
+            else if (RBExceptionAbsence.Checked)
+            {
+                return "exceptionAbsence";
+            }
+            else if (RBGroup.Checked)
+            {
+                return "group";
+            }
+            return "none";
+        }
+
+        //(~˘▾˘)~ Compose stuff (~˘▾˘)~
+        public string composeQuery()
+        {
+            string composedQuery = "SELECT " + usedColumnsString() + " FROM " + usedTablesString() + " WHERE " + combinedSpecificationsString();
+            return composedQuery;
+        }
+
+        public string usedTablesString()
+        {
+            string usedTablesString = "";
+            int count = usedTables.Count;
+            int tablesUsed = 1;
+            foreach (string table in usedTables)
+            {
+                usedTablesString = usedTablesString + "`" + table + "`";
+                if (tablesUsed < count)
+                {
+                    usedTablesString = usedTablesString + ", ";
+                }
+                tablesUsed++;
+            }
+            return usedTablesString;
+        }
+
+        public string usedColumnsString()
+        {
+            string usedColumnsString = "";
+            int count = usedColumns.Count;
+            int columnsUsed = 1;
+            foreach (string column in usedColumns)
+            {
+                usedColumnsString = usedColumnsString + "`" + column + "`";
+                if (columnsUsed < count)
+                {
+                    usedColumnsString = usedColumnsString + ", ";
+                }
+                columnsUsed++;
+            }
+            return usedColumnsString;
+        }
+
+        public string combinedSpecificationsString()
+        {
+            string combinedSpecificationsString = "";
+
+            combinedSpecificationsString = combinedSpecificationsString + NameSQLSpecifier;
+            combinedSpecificationsString = addAndBetweenStringsWhenLastStringIsNotEmpty(combinedSpecificationsString, ShiftDateSQLSpecifier);
+            combinedSpecificationsString = addAndBetweenStringsWhenLastStringIsNotEmpty(combinedSpecificationsString, AgeSQLSpecifier);
+            combinedSpecificationsString = addAndBetweenStringsWhenLastStringIsNotEmpty(combinedSpecificationsString, AbsenceSQLSpecifier);
+            combinedSpecificationsString = addAndBetweenStringsWhenLastStringIsNotEmpty(combinedSpecificationsString, GroupSQLSpecifier);
+
+            return combinedSpecificationsString;
+        }
+
+        public bool stringHasValue(string toCheck)
+        {
+            bool result = false;
+            if (toCheck.Length > 0)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public string addAndBetweenStringsWhenLastStringIsNotEmpty(string first, string last)
+        {
+
+            string result = "";
+            if (stringHasValue(last))
+            {
+                result = first + " AND " + last;
+            }
+            return result;
+        }
     }
 }
