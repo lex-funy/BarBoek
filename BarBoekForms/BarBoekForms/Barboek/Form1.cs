@@ -685,6 +685,10 @@ namespace Barboek
             {
                 result = first + " AND " + last;
             }
+            else
+            {
+                result = first + " " + last;
+            }
             return result;
         }
 
