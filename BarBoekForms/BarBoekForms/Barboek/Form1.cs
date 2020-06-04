@@ -86,11 +86,24 @@ namespace Barboek
                 DataSet results = ExecuteQuery(query, parameters);
                 dgvShowResults.AutoGenerateColumns = true;
                 dgvShowResults.DataSource = results; // dataset
-                dgvShowResults.DataMember = "Results";
+                if (results != null)
+                {
+                    foreach (DataTable table in results.Tables)
+                    {
+                        dgvShowResults.DataSource = table;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Er ging iets fout bij het opvragen van de gegevens. Mocht u apart alle gegevens van een tabel willen opvragen, zonder relatie, probeer dit dan stuk voor stuk");
+                }
+
+                //dgvShowResults.DataMember = "Results";
 
                 return true;
-
             }
+
+
             else
             {
                 return false;
@@ -338,7 +351,7 @@ namespace Barboek
                 int index = CLBColumns.Items.IndexOf(columnName);
                 if (index != -1)
                 {
-                    if (usedColumns.Contains(LBTables.SelectedItem.ToString() + "." + columnName))
+                    if (usedColumns.Contains("`" + LBTables.SelectedItem.ToString() + "`." + columnName))
                     {
                         CLBColumns.SetItemChecked(index, true);
                     }
@@ -597,7 +610,11 @@ namespace Barboek
         //(~˘▾˘)~ Compose stuff (~˘▾˘)~
         public string composeQuery()
         {
-            string composedQuery = "SELECT " + usedColumnsString() + " FROM " + usedTablesString() + " WHERE " + combinedSpecificationsString();
+            string composedQuery = "SELECT " + usedColumnsString() + " FROM " + usedTablesString();
+            if (stringHasValue(combinedSpecificationsString()))
+            {
+                composedQuery = composedQuery + " WHERE " + combinedSpecificationsString();
+            }
             return composedQuery;
         }
 
@@ -608,7 +625,9 @@ namespace Barboek
             int tablesUsed = 1;
             foreach (string table in usedTables)
             {
-                usedTablesString = usedTablesString + "`" + table + "`";
+                string toUse = "`" + table + "`";
+                usedTablesString = usedTablesString + leftJoinString(toUse);
+
                 if (tablesUsed < count)
                 {
                     usedTablesString = usedTablesString + ", ";
@@ -625,7 +644,7 @@ namespace Barboek
             int columnsUsed = 1;
             foreach (string column in usedColumns)
             {
-                usedColumnsString = usedColumnsString + "`" + column + "`";
+                usedColumnsString = usedColumnsString + "" + column + "";
                 if (columnsUsed < count)
                 {
                     usedColumnsString = usedColumnsString + ", ";
@@ -667,6 +686,142 @@ namespace Barboek
                 result = first + " AND " + last;
             }
             return result;
+        }
+
+        public string leftJoinString(string table)
+        {
+            string leftJoinString = "";
+            switch (table) 
+            {
+                case "`betaling`": leftJoinString = leftJoinStringBetaling(table); break;
+                case "`certificaat-lid-combo`": leftJoinString = leftJoinStringCertificaatLidCombo(table); break;
+                case "`leden`": leftJoinString = leftJoinStringLeden(table); break;
+                case "`lid-dienst-combo`": leftJoinString = leftJoinStringLidDienstCombo(table); break;
+                case "`nietbeschikbaar`": leftJoinString = leftJoinStringNietBeschikbaar(table); break;
+                case "`schema`": leftJoinString = leftJoinStringSchema(table); break;
+                case "`schema-dienst-combo`": leftJoinString = leftJoinStringSchemaDienstCombo(table); break;
+                case "`vereniging`": leftJoinString = leftJoinStringVereniging(table); break;
+                default: leftJoinString = "(" + table + ")"; break;
+            }
+            return leftJoinString;
+        }
+        public string leftJoinStringBetaling(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("leden") || usedTables.Contains("dienst") || usedTables.Contains("lid-dienst-combo"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN `lid-dienst-combo` ldc_b ON ldc_b.ID = betaling.Lid_Dienst_ID";
+                if (usedTables.Contains("leden"))
+                {
+                    leftJoinString = leftJoinString + "LEFT JOIN leden l_b ON l_b.ID = ldc_b.lidID";
+                }
+                if (usedTables.Contains("dienst"))
+                {
+                    leftJoinString = leftJoinString + "LEFT JOIN dienst d_b ON d_b.ID = ldc_b.dienstID";
+                }
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringCertificaatLidCombo(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("leden"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN leden l_clb ON l_clb.ID = `certificaat-lid-combo`.lidID";
+            }
+            if (usedTables.Contains("leden"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN certificaat c_clc ON c_clc.ID = `certificaat-lid-combo`.certificaatID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringLeden(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("adres"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN adres a_l ON a_l.ID = leden.adresID";
+            }
+            if (usedTables.Contains("vereniging"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN vereniging v_l ON v_l.ID = leden.bondsnummer";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringLidDienstCombo(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("leden"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN leden l_ldc ON l_ldc.ID = `lid-dienst-combo`.lidID";
+            }
+            if (usedTables.Contains("dienst"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN dienst d_ldc ON d_ldc.ID = `lid-dienst-combo`.dienstID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringNietBeschikbaar(string table)
+        {
+            string leftJoinString = "(" + table;
+
+            if (usedTables.Contains("leden"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN leden l_nb ON l_nb.ID = nietbeschikbaar.lidID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringSchema(string table)
+        {
+            string leftJoinString = "(" + table;
+
+            if (usedTables.Contains("vereniging"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN vereniging v_s ON v_s.ID = `schema`.verenigingID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringSchemaDienstCombo(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("schema"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN leden s_sdc ON s_sdc.ID = `schema-dienst-combo`.schemaID";
+            }
+            if (usedTables.Contains("dienst"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN dienst s_sdc ON s_sdc.ID = `schema-dienst-combo`.dienstID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
+        }
+        public string leftJoinStringVereniging(string table)
+        {
+            string leftJoinString = "(" + table;
+            if (usedTables.Contains("adres"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN adres a_v ON a_v.ID = `vereniging`.adresID";
+            }
+            if (usedTables.Contains("schema"))
+            {
+                leftJoinString = leftJoinString + "LEFT JOIN schema a_v ON a_v.ID = `vereniging`.schemaID";
+            }
+            leftJoinString = leftJoinString + ")";
+
+            return leftJoinString;
         }
     }
 }

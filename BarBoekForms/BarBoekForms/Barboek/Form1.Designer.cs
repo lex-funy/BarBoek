@@ -364,12 +364,13 @@
             // dgvShowResults
             // 
             this.dgvShowResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvShowResults.Location = new System.Drawing.Point(265, 337);
+            this.dgvShowResults.Location = new System.Drawing.Point(39, 337);
             this.dgvShowResults.Name = "dgvShowResults";
             this.dgvShowResults.RowHeadersWidth = 51;
             this.dgvShowResults.RowTemplate.Height = 24;
-            this.dgvShowResults.Size = new System.Drawing.Size(240, 150);
+            this.dgvShowResults.Size = new System.Drawing.Size(548, 150);
             this.dgvShowResults.TabIndex = 34;
+            this.dgvShowResults.Visible = false;
             // 
             // Form1
             // 
